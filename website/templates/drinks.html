@@ -2,77 +2,75 @@
 {% block content %}
 
 
-  <div class="container align-items-center justify-content-center h-100 " >
+<div class="container align-items-center justify-content-center ">
     <div class="row">
         <h1>Drinks</h1>
         <p>List of Current Drinks</p>
         <p>
-            To Do List:<br/>
-                Show Drinks in List<br/>
-                Have drinks show contents underneath decoded<br/>
-                Add Favorite Button<br/>
-                Add Drinks<br/>
-                Favorite based sorting<br/>
-                Add delete and confirm button<br/>
-                Add edit drink button (use drink add like dialog)<br/>
-                Sort drinks by able to make<br/>
+            To Do List:<br />
+            Have drinks show contents underneath decoded<br />
+            Add Favorite Button<br />
+            Ability to Add Drinks<br />
+            Favorite based sorting<br />
+            Add delete and confirm button<br />
+            Add edit drink button (use drink add like dialog)<br />
+            Sort drinks by able to make<br />
         </p>
         <p>
-            Done List:<br/>
-
+            Done List:<br />
+            Show Drinks in List<br />
         </p>
     </div>
-    <div class="row">
-      <div class="col">
-        <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
-          </div>
-      </div>
-      <div class="col-2">
-          x of 6 drinks
-      </div>
-    </div>
+
 
     <div class="row">
-        <ul class="list-group">
-            <li class="list-group-item">Coke with ice</li>
-            <li class="list-group-item">A second item</li>
-            <li class="list-group-item">A third item</li>
-            <li class="list-group-item">A fourth item</li>
-            <li class="list-group-item">And a fifth one</li>
-          </ul>
+        <div class="col">
+            <div class="progress">
+                {% if success %}
+            <div class="alert alert-danger" role="alert">
+                Successfully created {{success}}
+              </div>
+            {% endif %}
+        </div>
     </div>
-    <br/>
+
+    <div class="row" style="padding-bottom: 20px;">
+        <ul class="list-group">
+            {% for d in drinks %}
+            <li class="list-group-item">
+                <div class="d-flex">
+                    <div class="p-2 flex-grow-1"><h2>{{d.name}}</h2>
+                        <h6>{{d.desc}}</h6>
+                    
+                    </div>
+                    <div class="p-2">
+                        {% if d.fav %}
+                        <i class="fas fa-star"></i>
+                        {% else %}
+                        <i class="far fa-star"></i>
+                        {% endif %}
+                    </div>
+                </div>
+                Code: {{d.code}}<br />
+                Number of Pours: {{d.numPours}}<br />
+                
+            </li>
+            {% endfor %}
+
+        </ul>
+    </div>
+    <br />
     <div class="row">
-        <div class="col-auto me-auto">
-            
+        <div class="col-auto me-auto"  style="padding-left: 0px;">
         </div>
 
         <div class="col-auto">
-            <button type="button" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#addDrinkMenu">Add a Drink</button>
+            <a class="btn btn-primary" href="{{ url_for('drinksCreate') }}">Create a Drink</a>
         </div>
     </div>
-  </div>
+
+</div>
 
 
-  <div class="modal fade" tabindex="-1" id="addDrinkMenu" data-mdb-backdrop="static" data-mdb-keyboard="false" aria-hidden="true" >
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable ">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Drink Creator</h5>
-          <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <p>I have to figure out how this will work</p>
-            <p>List of common drinks here</p>
-            <p>custom drink maker</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary">Add</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
 {% endblock %}
