@@ -2,57 +2,74 @@
 {% block content %}
 
 
-<div class="container align-items-center justify-content-center ">
-    <div class="row">
+<div class="container align-items-center justify-content-center"  style="max-width: 750px">
+    <!--<div class="row">
         <h1>Drinks</h1>
         <p>List of Current Drinks</p>
         <p>
             To Do List:<br />
-            Have drinks show contents underneath decoded<br />
+            
             Add Favorite Button<br />
-            Ability to Add Drinks<br />
-            Favorite based sorting<br />
             Add delete and confirm button<br />
             Add edit drink button (use drink add like dialog)<br />
             Sort drinks by able to make<br />
         </p>
-        <p>
-            Done List:<br />
-            Show Drinks in List<br />
-        </p>
-    </div>
 
-
-    <div class="row">
-        <div class="col">
-            <div class="progress">
-                {% if success %}
-            <div class="alert alert-danger" role="alert">
-                Successfully created {{success}}
-              </div>
-            {% endif %}
-        </div>
-    </div>
+    </div>-->
 
     <div class="row" style="padding-bottom: 20px;">
         <ul class="list-group">
             {% for d in drinks %}
             <li class="list-group-item">
                 <div class="d-flex">
+                    
+
                     <div class="p-2 flex-grow-1"><h2>{{d.name}}</h2>
                         <h6>{{d.desc}}</h6>
-                    
                     </div>
+
                     <div class="p-2">
-                        {% if d.fav %}
-                        <i class="fas fa-star"></i>
-                        {% else %}
-                        <i class="far fa-star"></i>
-                        {% endif %}
+                        <a href="{{url_for('drinksFav', id = d.id)}}">
+                            {% if d.fav %}
+                            <i class="fas fa-star"></i>
+                            {% else %}
+                            <i class="far fa-star"></i>
+                            {% endif %}
+                        </a>
                     </div>
                 </div>
-                Code: {{d.code}}<br />
-                Number of Pours: {{d.numPours}}<br />
+               
+                
+                <div class="collapse mt-3 scroll-section" id="collapse-{{d.name.replace(" ", "_")}}" >
+                    <table class="table">
+                        <thead>
+                            <tr>
+                            <th scope="col">Drink</th>
+                            <th scope="col">Portion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for x in d.code.split(", ") %}
+                            <tr>
+                                {% set spl = x.split(": ") %}
+                                
+                            <th scope="row">{{tapNames[spl[0]]}}</th>
+                            <td>{% print('{:.0f}'.format(100*(spl[1]|float)) + "%") %}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    Number of Pours: {{d.numPours}}<br />
+                    <br/>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a data-mdb-toggle="collapse" class="btn btn-primary" href="#collapse-{{d.name.replace(" ", "_")}}"  aria-expanded="false" aria-controls="collapse-{{d.name.replace(" ", "_")}}">
+                        Drink Info
+                    </a>
+                    <a class="btn btn-danger" href="{{url_for('drinksDelete', id = d.id)}}"  aria-expanded="false">
+                        Delete
+                    </a>
+                </div>
                 
             </li>
             {% endfor %}

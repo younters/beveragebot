@@ -2,10 +2,12 @@ from flask import Flask, render_template, flash, redirect, session, request, abo
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"FIkldHUFU4Q8POK$z\n\xec]/'
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///beveragebot.sqlite3'
 
 db = SQLAlchemy(app)
-
+maxDrinks = 6
 
 class drinkList(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
@@ -59,7 +61,10 @@ class tapList(db.Model):
 
 @app.route("/")
 def main():
-    return render_template('home.html')
+    taps = db.session.query(tapList).filter(tapList.available == True).all()
+    drinksFav = db.session.query(drinkList).filter(drinkList.fav == True).all()
+    drinks = db.session.query(drinkList).order_by(drinkList.fav.desc()).all()
+    return render_template('home.html', drinks=drinks, drinksFav = drinksFav, taps=taps, maxDrinks=maxDrinks)
 
 
 @app.route("/drinks")
@@ -67,8 +72,13 @@ def drinks():
     #test = drinkList("Coke with Lime", "h20: 0.7, coke: 0.25, lime: 0.05", "Just Coca Cola")
     #db.session.add(test)
     #db.session.commit()
-    drinks = db.session.query(drinkList).all()
-    return render_template('drinks.html', drinks=drinks)
+    
+    taps = db.session.query(tapList).all()
+    tapNames = {}
+    for tap in taps:
+        tapNames[tap.name] = tap.display
+    drinks = db.session.query(drinkList).order_by(drinkList.fav.desc()).all()
+    return render_template('drinks.html', drinks=drinks, tapNames=tapNames)
 
 @app.route("/drinks/create", methods = ['POST', 'GET'])
 def drinksCreate():
@@ -104,13 +114,31 @@ def drinksCreate():
             db.session.commit()
             #taps = db.session.query(tapList).all()
             #return render_template('drinks.create.html', taps=taps, result = result)
-            return redirect(url_for('drinks'), success = result['dname'])
+            flash('Successfully created ' + result['dname'], 'success')
+            return redirect(url_for('drinks'))
     else:
         taps = db.session.query(tapList).all()
         return render_template('drinks.create.html', taps=taps, result = {})
 
+@app.route("/drinks/delete/<id>", methods = ['POST', 'GET'])
+def drinksDelete(id):
+    name = db.session.query(drinkList).filter(drinkList.id == id).first().name
+    db.session.query(drinkList).filter(drinkList.id == id).delete()
+    db.session.commit()
+    flash('Successfully deleted ' + name, 'info')
+    return redirect(url_for('drinks'))
 
-
+@app.route("/drinks/fav/<id>", methods = ['POST', 'GET'])
+def drinksFav(id):
+    name = db.session.query(drinkList).filter(drinkList.id == id).first().name
+    isFav = db.session.query(drinkList).filter(drinkList.id == id).first().fav
+    db.session.query(drinkList).filter(drinkList.id == id).first().fav = not isFav
+    db.session.commit()
+    prefix = ""
+    if isFav:
+        prefix = "un"
+    flash('Successfully '+ prefix +'favorited ' + name, 'info')
+    return redirect(url_for('drinks'))
 
 @app.route("/taplist")
 def taplist():

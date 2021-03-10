@@ -19,7 +19,7 @@
             {% if fail %}
             <div class="alert alert-danger" role="alert">
                 {{msg}}
-              </div>
+            </div>
             {% endif %}
         </div>
         <div class="row" style="padding-bottom: 20px;">
@@ -93,9 +93,9 @@
 
     var availableDrinks = [
         {% for tap in taps %}
-    { name: '{{tap.name}}', display: '{{tap.display}}' },
-    {% endfor %}
-];
+        { name: '{{tap.name}}', display: '{{tap.display}}' },
+        {% endfor %}
+    ];
     var chosenDrinks = [
 
     ];
