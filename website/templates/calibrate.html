@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+
 {% block content %}
 
 
@@ -32,7 +33,7 @@
                     </div>
 
                     <div class="p-2">
-                        <a data-mdb-toggle="collapse" class="btn btn-outline-primary btn-rounded"  data-mdb-ripple-color="primary" href="#collapse-{{m.source}}"  aria-expanded="false" aria-controls="collapse-{{m.source}}">
+                        <a " class="btn btn-outline-primary btn-rounded"  href="{{ url_for('calibrateSrc', name=m.source) }}"  role="button" data-mdb-ripple-color="primary">
                             Calibrate
                         </a>
                     </div>

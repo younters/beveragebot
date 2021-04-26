@@ -240,6 +240,11 @@ def calibrate():
     ml = db.session.query(motorList).all()
     return render_template('calibrate.html', ml=ml)
 
+@app.route("/calibrate/<string:name>")
+def calibrateSrc(name):
+    ml = db.session.query(motorList).filter(motorList.source == name).all()
+    print(ml)
+    return render_template('calibrate.source.html', m=ml[0])
 
 
 @socketio.on('connect')
@@ -300,6 +305,31 @@ def handle_message(msg):
 def handle_logging(level, info):
    print(level, info)
    return
+
+@socketio.on('pourt')
+def handle_send(data):
+    print(data)
+    source = data[0]
+    value = float(data[1])
+    #ser.on_send(data['message'] + '\r\n')
+    print("recieved pour time: %f"%value)
+    #source = db.session.query(tapList).filter(tapList.name == data[0]).first().source
+    sendSerial(source + '|' + str(round(value, 3)))
+    return
+
+
+@socketio.on('calibrate')
+def handle_send(data):
+    source = data[0]
+    volume = round(float(data[1]),3)
+    time = round(float(data[2]),3)
+    print("setting new calibration data")
+    db.session.query(motorList).filter(motorList.source == source).first().calTime = time
+    db.session.query(motorList).filter(motorList.source == source).first().calVol = volume 
+    db.session.commit()       
+    return
+
+
 
 def pourDrink(code, cupSize):
     print("Pouring drinks")
