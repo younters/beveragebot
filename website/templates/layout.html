@@ -5,7 +5,7 @@
     <!--link href="/static/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <--script src="/static/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script-->
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <link rel="stylesheet" href="/static/md/css/mdb.min.css" />
     <script type="text/javascript" src="/static/md/js/mdb.min.js"></script>
@@ -13,8 +13,10 @@
     <link rel="stylesheet" href="/static/roboto.css" />
     <script src="/static/jquery-3.5.1.min.js"></script>
     <script src="/static/js/smoothState.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="/static/css/style.css" />
 
+    {% block heading %}{% endblock %}
     
   </head>
   <body class="d-flex flex-column min-vh-100">
@@ -33,21 +35,26 @@
             <li class="nav-item">
               <a  {%- if request.path == url_for('drinks') %} class="nav-link active" aria-current="page" {% else %} class="nav-link" {% endif %} href="{{ url_for('drinks') }}">Drink List</a>
             </li>
+            </li>
+            <li class="nav-item">
+              <a  {%- if request.path == url_for('taplist') %} class="nav-link active" aria-current="page" {% else %} class="nav-link" {% endif %} href="{{ url_for('taplist') }}">Tap List</a>
+            </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                 Manage
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <li><a class="dropdown-item" href="{{ url_for('taplist') }}">Change Hookups</a></li>
-                <li><a class="dropdown-item" href="#">Statistics</a></li>
-                <li><a class="dropdown-item" href="#">Hardware Info</a></li>
+                <!--<li><a class="dropdown-item" href="{{ url_for('taplist') }}">Tap List</a></li>-->
+                <li><a class="dropdown-item" href="{{ url_for('calibrate') }}">Calibrate</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('serialConnection') }}">Serial Connection</a></li>
               </ul>
             </li>
           </ul>
         </div>
       </div>
     </nav>
-<br/>
+<p/>
+<p/>
 
     <main role="main mt-auto">
       {% with messages = get_flashed_messages(with_categories=true) %}
@@ -72,7 +79,8 @@
       
     
     </main>
-  <br/>
+  <p/>
+  <p/>
     <footer class="text-muted bg-light mt-auto">
       <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
         © 2021 Copyright BeverageBot Team

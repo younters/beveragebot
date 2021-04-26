@@ -9,9 +9,9 @@
   </div>
   <div class="row" style="padding-bottom: 20px;">
     <div class="col align-middle" style="padding-left:0px">
-      <div class="progress rounded" style="height: 34px">
-        <div class="progress-bar progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
-          aria-valuemax="{{maxDrinks}}" id="progressBar"></div>
+      <div class="progress rounded" style="height: 34px; border: 1px solid #bdbdbd;">
+        <div class="progress-bar progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuenow="0"
+          aria-valuemin="0" aria-valuemax="{{maxDrinks}}" id="progressBar"></div>
       </div>
     </div>
 
@@ -25,14 +25,14 @@
   </div>
 
   <div class="row">
-    
+
     <ul class="list-group listEmpty" id="mainList">
       <li class="list-group-item text-center">
 
-        <p></p><i class="fas fa-glass-cheers fa-6x"></i>
+        <p></p><i class="fas fa-glass-cheers fa-6x popIn"></i>
         <p></p>
         <p>
-          no drinks added... yet 
+          no drinks added... yet
         </p>
       </li>
 
@@ -46,11 +46,33 @@
     </div>
 
     <div class="col-auto">
-      <button type="button" class="btn btn-success">Pour Drinks</button>
+      <button type="button" class="btn btn-success" id="pour">Pour Drinks</button>
     </div>
   </div>
 </div>
 
+<style>
+
+
+  .p-2 {
+  
+    background-color: cadetblue;
+    height: 50px;
+    textsize: 28pt;
+    margin: 5px 5px 5px 5px;
+
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 0 #333,
+        -1px -1px 0 #333,
+        1px -1px 0 #333,
+        -1px 1px 0 #333,
+        2px 2px 5px rgba(0,0,0,0.65);
+
+}
+
+</style>
 
 <div class="modal fade" tabindex="-1" id="addDrinkMenu" data-mdb-backdrop="static" data-mdb-keyboard="false"
   aria-hidden="true">
@@ -73,6 +95,16 @@
             <div id="collapseFav" class="accordion-collapse collapse show" aria-labelledby="headingFav"
               data-mdb-parent="#drinkSelector">
               <div class="accordion-body">
+
+
+                <div class="d-flex align-content-lg-stretch flex-wrap" style="width: 100%;">
+                  {% for drink in drinksFav %}
+                  <div class="p-2 flex-grow-1 ripple drinkBtn" id="{{drink.id}}" value="{{drink.code}}" style="background-color: {{drink.color}}; text-align: center">{{drink.name}}</div>
+                  {% endfor %}
+                </div>
+
+
+                <!--
                 {% for drink in drinksFav %}
                 <div class="form-check" style="padding-bottom: 5px;">
                   <input class="form-check-input" type="checkbox" value="" id="ckf-{{drink.id}}"
@@ -80,7 +112,7 @@
                   <label class="form-check-label" for="ckf-{{drink.id}}">{{drink.name}}</label>
                 </div>
 
-                {% endfor %}
+                {% endfor %}-->
               </div>
             </div>
           </div>
@@ -94,6 +126,12 @@
             <div id="collapseAll" class="accordion-collapse collapse" aria-labelledby="headingAll"
               data-mdb-parent="#drinkSelector">
               <div class="accordion-body">
+                <div class="d-flex align-content-lg-stretch flex-wrap" style="width: 100%;">
+                  {% for drink in drinks %}
+                  <div class="p-2 flex-grow-1 ripple drinkBtn" id="{{drink.id}}" value="{{drink.code}}" style="background-color: {{drink.color}}; text-align: center">{{drink.name}}</div>
+                  {% endfor %}
+                </div>
+                <!--
                 {% for drink in drinks %}
                 <div class="form-check" style="padding-bottom: 5px;">
                   <input class="form-check-input" type="checkbox" value="" id="ck-{{drink.id}}"
@@ -101,6 +139,7 @@
                   <label class="form-check-label" for="ck-{{drink.id}}">{{drink.name}}</label>
                 </div>
                 {% endfor %}
+              -->
               </div>
             </div>
           </div>
@@ -147,20 +186,41 @@
         </div>
 
       </div>
+      <!--
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" id="cancelAdd">Cancel</button>
         <button type="button" class="btn btn-primary" id="drinkAdd">Add</button>
       </div>
+      -->
     </div>
   </div>
 </div>
 <script>
 
+  const animateCSS = (element, animation, prefix = 'animate__') =>
+    // We create a Promise and return it
+    new Promise((resolve, reject) => {
+      const animationName = `${prefix}${animation}`;
+      const node = document.querySelector(element);
+
+      node.classList.add(`${prefix}animated`, animationName);
+
+      // When the animation ends, we clean the classes and resolve the Promise
+      function handleAnimationEnd(event) {
+        event.stopPropagation();
+        node.classList.remove(`${prefix}animated`, animationName);
+        resolve('Animation ended');
+      }
+
+      node.addEventListener('animationend', handleAnimationEnd, { once: true });
+    });
+
+
   var availableDrinks = [
     {% for drink in drinks %}
   { name: '{{drink.name}}', code: '{{drink.code}}', id: '{{drink.id}}' },
   {% endfor %}
-];
+  ];
   var availableTap = [
     {% for tap in taps %}
   { name: '{{tap.name}}', display: '{{tap.display}}', id: '{{tap.id}}' },
@@ -169,7 +229,8 @@
   var chosenDrinks = [
 
   ];
-  
+
+  var drinkID = 0;
 
 
   $('#createDrink').on('shown.bs.modal', function () {
@@ -190,7 +251,8 @@
       // Handle Favorites
       availableDrinks.forEach(dk => {
         if ($('input[id="ckf-' + dk.id + '"]').is(':checked')) {
-          addListItem(dk.name, dk.id, dk.coke);
+          
+          addListItem(dk.name, dk.id, dk.code);
         }
       });
     } else if ($('#collapseAll').hasClass('show')) {
@@ -212,62 +274,87 @@
 
   });
 
+  $('.drinkBtn').click(function (e) {
+    console.log(e.target);
+    console.log("dk.code");
+    console.log(e.target.getAttribute("value"));
+    addListItem(e.target.innerText, e.target.id, e.target.getAttribute("value"));
+    $('#addDrinkMenu').modal('hide');
+
+  });
+
 
   function addListItem(name, id, code) {
     if ($('#mainList').hasClass('listEmpty') == true) {
       $('#mainList').empty();
       $('#mainList').removeClass('listEmpty');
     };
-    if (chosenDrinks.length >= {{maxDrinks}}) {
-      alert('Added too many drinks');
-      return;
+    if (chosenDrinks.length >= {{ maxDrinks }}) {
+    alert('Added too many drinks');
+    return false;
     }
-    code = '<div class="row" style="padding-bottom: 10px; padding-top:10px">'
+    htmlCode = '<div class="row align-items-center " style="padding-bottom: 10px; padding-top:10px; z-index: -100;">'
       + '<div class="col-auto me-auto"><h2>'
       + name
       + '</h2></div>'
       + '<div class="col-auto">'
-      + '<select class="form-control" id="iceOption"><option>ice</option><option>1/2 ice</option><option>no ice</option></select>'
+      + '<select class="form-control" id="iceOption-'+ drinkID +'" class="iceOption"><option>ice</option><option>1/2 ice</option><option>no ice</option></select>'
       + '</span></div>'
       + '<div class="col-auto">'
-      + '<button type="button" class="close" data-dismiss="alert" aria-label="Close" id="removeItem"><span aria-hidden="true">&times;</span></button>'
+      + '<button type="button" class="close" data-dismiss="alert" aria-label="Close" id="' + drinkID + '"><span aria-hidden="true">&times;</span></button>'
       + '</div>'
       + '</div>';
-      // add button for like a dash of lime
-    $('#mainList').append('<li class="list-group-item " id="list-' + name +  '"">' + code + '</li>');
-    chosenDrinks.push({ name: name, code: code });
+    // add button for like a dash of lime
+    $('#mainList').append('<li class="list-group-item animate__animated animate__fadeInUp " id="list-' + drinkID + '">' + htmlCode + '</li>');
+    // Get cup size from drop down then convert to mL
+
+    $("#iceOption-" + drinkID).on('input', function(e){
+      var iceOpt = this.value;
+      var iceVal = 0;
+      switch (iceOpt) {
+        case "no ice": iceVal = 0; break;
+        case "1/2 ice": iceVal = 0.5; break;
+        case "ice": default: iceVal = 1; break;
+      }
+      var dID = this.id.split("-");
+      console.log(iceVal);
+      chosenDrinks.forEach(function (value, i) {
+        if (value.drinkID == dID[1]) {
+          value.ice = iceVal;
+        }
+      });
+    });
+
+
+
+    var cupSize = $('#cupSize').val().split(" ")[0] * 29.57;
+    var ice = 1.0; // 0 - 1 is ice in drink.
+    chosenDrinks.push({ name: name, code: code, drinkID: drinkID, size: cupSize, ice: ice });
+    drinkID = drinkID + 1;
     updateProgress();
+    return true;
   };
 
   function addCustomItem(name, id, code) {
     // needs to be added
-    if ($('#mainList').hasClass('listEmpty') == true) {
-      $('#mainList').empty();
-      $('#mainList').removeClass('listEmpty');
-    };
-    code = '<div class="row" style="padding-bottom: 10px; padding-top:10px">'
-      + '<div class="col-auto me-auto"><h2>'
-      + name
-      + '</h2></div>'
-      + '<div class="col-auto">'
-      + '<select class="form-control" id="iceOption"><option>ice</option><option>1/2 ice</option><option>no ice</option></select>'
-      + '</span></div>'
-      + '<div class="col-auto">'
-      + '<button type="button" class="form-control" id="removeItem">&times;</button>'
-      + '</div>'
-      + '</div>';
-      // add button for like a dash of lime
-    $('#mainList').append('<li class="list-group-item " id="list-' + name +  '"">' + code + '</li>');
-    chosenDrinks.push({ name: name, portion: 0 });
+
   };
 
+  // Logic for Item Removal Button
+  $('#mainList').on('click', '.close', function () {
+    id = this.id;
+    // removes the web element from display
 
-  $('#removeItem').click(function (e) {
-    alert('test');
-    alert($(this).parent.html);
-    
-    //chosenDrinks = $.grep(chosenDrinks, function (value) { return value.name != name; });
+    // remove from list containing the drinks
+    chosenDrinks = $.grep(chosenDrinks, function (n, i) { return (n.drinkID != id); });
+    animateCSS('#list-' + id, 'zoomOutDown').then((message) => {
+      $("#list-" + id).remove();
+      updateProgress();
+    });
+    // update progress bar
   });
+
+
 
   function unselectAll() {
     availableDrinks.forEach(dk => {
@@ -286,7 +373,85 @@
   function updateProgress() {
     progress = chosenDrinks.length;
     $('#progressBar').attr('aria-valuenow', progress);
-    $('#progressBar').width(progress/{{maxDrinks}}*100 + '%');
-  }
+    $('#progressBar').width(progress / {{ maxDrinks }}* 100 + '%');
+
+    if (chosenDrinks.length == 0) {
+      $('#mainList').addClass('listEmpty');
+      $('#mainList').append('<li class="list-group-item text-center">' +
+        '<p></p><i class="fas fa-glass-cheers fa-6x popIn"></i>' +
+        '<p></p><p>no drinks added... yet</p></li>');
+    }
+  
+  };
+
+</script>
+{% endblock %}
+<!--      Idea for New Drink Selector Menu
+  Will remove add and cancel buttons and just clicking the box will add it. 
+  Need to add database for color so hold off on all the changes.
+          <style>
+            .p-2 {
+              background-color: cadetblue;
+              height: 50px;
+              textsize: 28pt;
+              margin: 5px 5px 5px 5px;
+            }
+          </style>
+          <div class="d-flex align-content-lg-stretch flex-wrap" style="width: 350px;">
+            <div class="p-2 flex-grow-1">Flex item 1</div>
+            <div class="p-2 flex-grow-1">Flex 2</div>
+  <div class="p-2  flex-grow-1">Soda Water</div>
+  <div class="p-2  flex-grow-1">Root Beer</div>
+  <div class="p-2  flex-grow-1">Coke</div>
+  <div class="p-2  flex-grow-1">Rum and Coke</div>
+  <div class="p-2 flex-grow-1">Whiskey Sour</div>
+          </div>
+        -->
+
+{% block heading %}
+<script type="text/javascript" src="static/js/socket.io.js"></script>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function () {
+
+
+    
+    var socket = io();
+
+    // Pour Button Action -> Communicate Event with Python
+    $('#pour').click(function (event) {
+      var drinks = JSON.stringify(chosenDrinks);
+      //var data = '{' + '"order": "' + drinks + '"}';
+      socket.emit('pour', drinks);
+      console.log('sent');
+
+    });
+
+    socket.on('connect', function () {
+      var $textarea = $('#serial_message');
+      $textarea.val($textarea.val() + 'Opened Communication Lane\n');
+      socket.emit('my event', { data: 'I\'m connected!' });
+      console.log('connected to websocket');
+    });
+    socket.on('serial_message', function (data) {
+      console.log(data);
+      var text = data['message'];
+      var $textarea = $('#serial_message');
+      $textarea.val($textarea.val() + text + '\n');
+      console.log('New Message');
+    });
+
+    socket.on('disconnect', function (data) {
+      console.log('you have been disconnected');
+    });
+    socket.on('reconnect_error', () => {
+      console.log('attempt to reconnect has failed');
+    });
+    socket.on('reconnect', function (data) {
+      console.log('you have been reconnected');
+    });
+
+  });
+
+
 </script>
 {% endblock %}

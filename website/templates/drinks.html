@@ -3,10 +3,10 @@
 
 
 <div class="container align-items-center justify-content-center"  style="max-width: 750px">
+    
     <!--<div class="row">
-        <h1>Drinks</h1>
-        <p>List of Current Drinks</p>
-        <p>
+    <p>List of Current Drinks</p>
+    <p>
             To Do List:<br />
             
             Add Favorite Button<br />
@@ -18,6 +18,8 @@
     </div>-->
 
     <div class="row" style="padding-bottom: 20px;">
+        <h1>Drink List</h1>
+        <p></p>
         <ul class="list-group">
             {% for d in drinks %}
             <li class="list-group-item">
@@ -63,11 +65,15 @@
                     <br/>
                 </div>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a data-mdb-toggle="collapse" class="btn btn-primary" href="#collapse-{{d.name.replace(" ", "_")}}"  aria-expanded="false" aria-controls="collapse-{{d.name.replace(" ", "_")}}">
-                        Drink Info
+                    
+                    <a data-mdb-toggle="collapse" class="btn btn-outline-primary btn-rounded"  data-mdb-ripple-color="primary" href="#collapse-{{d.name.replace(" ", "_")}}"  aria-expanded="false" aria-controls="collapse-{{d.name.replace(" ", "_")}}">
+                        Expand Info
                     </a>
-                    <a class="btn btn-danger" href="{{url_for('drinksDelete', id = d.id)}}"  aria-expanded="false">
-                        Delete
+                    <!--<a class="btn btn-outline-primary btn-floating" href="{{ url_for('tapEdit', name=d.name) }}"   data-mdb-ripple-color="primary"  role="button">
+                        <i class="fas fa-edit"></i>
+                      </a>-->
+                    <a class="btn btn-outline-danger btn-floating" href="{{url_for('drinksDelete', id = d.id)}}"   data-mdb-ripple-color="danger"  aria-expanded="false">
+                        <i class="fas fa-trash"></i>
                     </a>
                 </div>
                 

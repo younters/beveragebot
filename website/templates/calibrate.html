@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+
+
+<div class="container align-items-center justify-content-center"  style="max-width: 750px">
+    
+    <!--<div class="row">
+    <p>List of Current Drinks</p>
+    <p>
+            To Do List:<br />
+            
+            Add Favorite Button<br />
+            Add delete and confirm button<br />
+            Add edit drink button (use drink add like dialog)<br />
+            Sort drinks by able to make<br />
+        </p>
+
+    </div>-->
+
+    <div class="row" style="padding-bottom: 20px;">
+        <h1>Calibrate</h1>
+        <p></p>
+        <ul class="list-group">
+            {% for m in ml %}
+            <li class="list-group-item">
+                <div class="d-flex">
+                    
+
+                    <div class="p-2 flex-grow-1"><h2>{{m.source}}</h2>
+                        <p>Calibration Volume: {{m.calVol}}<br/>
+                        Calibration Time: {{m.calTime}}</p>
+                    </div>
+
+                    <div class="p-2">
+                        <a data-mdb-toggle="collapse" class="btn btn-outline-primary btn-rounded"  data-mdb-ripple-color="primary" href="#collapse-{{m.source}}"  aria-expanded="false" aria-controls="collapse-{{m.source}}">
+                            Calibrate
+                        </a>
+                    </div>
+                </div>
+               
+
+                
+                
+            </li>
+            {% endfor %}
+
+        </ul>
+    </div>
+    <br />
+
+
+</div>
+
+
+
+{% endblock %}

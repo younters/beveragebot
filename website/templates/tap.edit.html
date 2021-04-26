@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+{% block content %}
+
+
+<div class="container align-items-center justify-content-center ">
+    <form action="" method="post">
+        <div class="row">
+            <h1>Edit {{tap.display}}</h1>
+        </div>
+        <p></p>
+        <div class="row" style="padding-bottom: 20px;">
+            <div class="col col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon1">Name</span>
+                    <input type="text" class="form-control" name="display" placeholder="{{tap.display}}"
+                        value="{{tap.display}}" aria-label="Capacity" aria-describedby="basic-addon1" />
+                </div>
+                <p>
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon1">Code</span>
+                    <input type="text" class="form-control" name="name" placeholder="{{tap.name}}"
+                        value="{{tap.name}}" aria-label="Capacity" aria-describedby="basic-addon1" />
+                </div>
+                </p>
+                <p>
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon1">Capacity</span>
+                    <input type="text" class="form-control" name="capacity" placeholder="{{tap.capacity}}"
+                        value="{{tap.capacity}}" aria-label="Capacity" aria-describedby="basic-addon1" />
+                    <span class="input-group-text">mL</span>
+                </div>
+                </p>
+                <p>
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon1">Poured</span>
+                    <input type="text" class="form-control" name="poured" placeholder="{{tap.poured}}"
+                        value="{{tap.poured}}" aria-label="Poured" aria-describedby="basic-addon1" />
+                    <span class="input-group-text">mL</span>
+                </div>
+                </p>
+                <p>
+                <div class="btn-group">
+                    <input type="radio" class="btn-check" name="tapSrc" id="none" value="none" autocomplete="off"
+                        {% if tap.source == 'none' %}checked{% endif %} />
+                    <label class="btn btn-warning" for="none">none</label>
+                    {% for m in motorList %}
+                    <input type="radio" class="btn-check" name="tapSrc" id="{{m.source}}" value="{{m.source}}" autocomplete="off" {% if m.source==tap.source %}checked{% endif %} />
+                    <label class="btn {% if m.source.startswith('src') %}btn-success{% else %}btn-primary{% endif %}" for="{{m.source}}">{{m.source}}</label>
+                    {% endfor %}
+                </div>
+                </p>
+                <p></p>
+                <p></p>
+
+            </div>   
+            
+        </div>
+        <div class="row" style="padding-bottom: 20px;">
+            <div class="col align-items-center justify-content-center">
+                <p>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </p>
+            </div>
+        </div>
+</div>
+</form>
+</div>
+
+
+
+<script>
+
+    function loadFrame() {
+        document.querySelectorAll('.form-outline').forEach((formOutline) => {
+            new mdb.Input(formOutline).init();
+        });
+    }
+
+    $(document).ready(function () {
+        loadFrame();
+    });
+</script>
+
+
+{% endblock %}

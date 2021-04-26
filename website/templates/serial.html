@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+{% block heading %}
+<script type="text/javascript" src="static/js/socket.io.js"></script>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        
+
+      var socket = io();
+        
+      $('#send').click(function(event) {
+        var message = $('#message').val();
+        var data = '{' + '"message": "' + message + '"}';
+        $('#message').val('');
+        socket.emit('send', data=data);
+        console.log('sent');
+      });
+      socket.on('connect', function() {
+        var $textarea = $('#serial_message');
+        $textarea.val($textarea.val() + 'Opened Communication Lane\n');
+        socket.emit('my event', {data: 'I\'m connected!'});
+        console.log('conn');
+    });
+      socket.on('serial_message', function(data) {
+        console.log(data);
+        var text = data['message'];
+        var $textarea = $('#serial_message');
+        $textarea.val($textarea.val() + text + '\n');
+        console.log('rec');
+      });
+
+  socket.on('disconnect', function(data) { 
+    console.log('you have been disconnected');
+  });
+  socket.on('reconnect_error', () => {
+    console.log('attempt to reconnect has failed');
+  });
+  socket.on('reconnect',function(data) {
+    console.log('you have been reconnected');
+  });
+
+    });
+
+  
+  </script>
+{% endblock %}
+
+
+{% block content %}
+
+
+
+<div class="container align-items-center justify-content-center"  style="max-width: 750px">
+
+    <div class="row" style="padding-bottom: 20px;">
+        <div class="" style="width: 100%">
+            <textarea id="serial_message" class="form-control" rows=10></textarea>
+          </div>
+    </div>
+    <div class="row">
+        <div class="col-md-9 d-flex align-items-center justify-content-center">
+            <div class="input-group" >
+                <span class="input-group-text" id="basic-addon1">msg:</span>
+                <input type="text" class="form-control" placeholder="serial message goes here" aria-label="serial message goes here" aria-describedby="basic-addon1" id="message" />
+              </div>
+              
+        </div>
+
+        <div class="col-md-3 ms-auto d-flex align-items-center justify-content-center">
+            <button class="btn btn-primary" id="send">Send Message</a>
+        </div>
+    </div>
+
+</div>
+
+
+
+{% endblock %}

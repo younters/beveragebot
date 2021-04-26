@@ -13,9 +13,7 @@
     <form action="#" method="post">
         <div class="row">
             <h1>Create a Drink</h1>
-            <p>
-                To Do List:<br />
-            </p>
+            <p></p>
             {% if fail %}
             <div class="alert alert-danger" role="alert">
                 {{msg}}
@@ -23,7 +21,8 @@
             {% endif %}
         </div>
         <div class="row" style="padding-bottom: 20px;">
-            <p>
+            <div class="col">
+                            <p>
 
             <div class="form-outline">
                 <input type="text" id="dname" class="form-control" maxlength="100" name="dname" />
@@ -37,6 +36,16 @@
                 <label class="form-label" for="ddesc">Description</label>
             </div>
             </p>
+            <p>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Color</span>
+                    <input type="color" name="color" class="form-control" placeholder="Color" aria-label="Color"
+                      aria-describedby="basic-addon1" value="#ff0000" />
+                  </div>
+                  
+            </p>
+            </div>
+
 
         </div>
 
@@ -161,7 +170,7 @@
     }
 
     $(document).ready(function () {
-        addListItem('h20', 'Water');
+        addListItem('h2o', 'Water');
         loadFrame();
     });
 </script>

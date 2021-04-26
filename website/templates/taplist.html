@@ -5,7 +5,7 @@
   <div class="container align-items-center justify-content-center h-100 " >
     <div class="row">
         <h1>Taplist</h1>
-        <p>Manage Drinks on Tap</p>
+        <p></p>
         <!--<p>
             To Do List:<br/>
                 
@@ -25,19 +25,21 @@
             {% for tap in taps %}
             <li class="list-group-item">
               <h2>{{tap.display}}</h2>
-              <div class="progress" style="height: 20px">
+              <div class="progress" style="height: 10px">
                 <div
                   class="progress-bar {% if (tap.capacity - tap.poured)/tap.capacity < 0.3 %} bg-danger {% endif %}"
                   role="progressbar"
-                  style="width: {{(tap.capacity - tap.poured)}}%"
+                  style="width: {{((tap.capacity - tap.poured)/tap.capacity*100)}}%"
                   aria-valuenow="{{(tap.capacity - tap.poured)}}"
                   aria-valuemin="0"
                   aria-valuemax="{{tap.capacity}}"
                 >
-                {{(tap.capacity - tap.poured)}} mL
-                </div>
               </div>
-              <br/>
+            </div>
+            <div class="row justify-content-center">
+              {{(tap.capacity - tap.poured)}} / {{tap.capacity}} mL
+            </div>
+              <p/>
                 <div class="row">
                   <div class="col-md">
                     Code: {{tap.name}}
@@ -49,13 +51,21 @@
                     Available: {{tap.available}}
                   </div>
                 </div>
-                <br/>
+                <p/>
                 <div class="row">
                   <div class="col-md">
-                    Last Refilled: {{tap.refillDate}}
+                    Last Refilled: {{tap.refillDate.strftime('%b %d, %Y %I:%M %p')}}
+                    {% set dif = (now - tap.refillDate) %} ({{dif.days}} days ago)
                   </div>
                   <div class="col-auto">
-                    Edit
+                    {% if tap.source.startswith("tap") %}
+                    <a class="btn btn-outline-primary btn-rounded" href="{{ url_for('tapRefill', name=tap.name) }}" role="button" data-mdb-ripple-color="primary">
+                      Refill
+                    </a>
+                    {% endif %}
+                    <a class="btn btn-outline-primary btn-floating" href="{{ url_for('tapEdit', name=tap.name) }}" role="button" data-mdb-ripple-color="primary">
+                      <i class="fas fa-edit"></i>
+                    </a>
                   </div>
                 </div>
               
@@ -64,7 +74,7 @@
             {% endfor %}
           </ul>
     </div>
-    <br/>
+    <p/>
     <div class="row">
         <div class="col-auto me-auto">
             
