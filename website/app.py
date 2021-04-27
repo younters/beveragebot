@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.secret_key = b'_5#y2L"FIkldHUFU4Q8POK$z\n\xec]/'
 app.config['SERIAL_TIMEOUT'] = 1
 if platform.system() == 'Linux':
-    app.config['SERIAL_PORT'] = '/dev/cu.usbmodem14101'
+    app.config['SERIAL_PORT'] = '/dev/ttyACM0'
 elif platform.system() == 'Darwin':
     app.config['SERIAL_PORT'] = '/dev/cu.usbmodem14101'
 app.config['SERIAL_BAUDRATE'] = 115200
